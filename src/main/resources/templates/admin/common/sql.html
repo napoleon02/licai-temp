@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SQL执行器</title>
+    <link href="/admin/style.css" rel="stylesheet"/>
+    <link href="/plugins/easyui/themes/icon.css" rel="stylesheet"/>
+    <link href="/plugins/easyui/themes/default/easyui.css" rel="stylesheet"/>
+    <script src="/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="/plugins/easyui/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="/plugins/easyui/locale/easyui-lang-zh_CN.js" type="text/javascript"></script>
+    <script src="/plugins/jquery.dateFormat.min.js" type="text/javascript"></script>
+    <script src="/plugins/jquery.form.min.js" type="text/javascript"></script>
+    <script src="/admin/easyui.ext.datebox.js" type="text/javascript"></script>
+    <script src="/admin/all.js" type="text/javascript"></script>
+</head>
+<body>
+<form id="sqlForm">
+        <textarea class="easyui-textbox" name="sql" label="sql语句:" labelPosition="top"
+                  multiline="true" style="width:100%;height:100px"></textarea>
+    <button type="button" class="easyui-linkbutton" data-options="iconCls:'icon-save',width:'80px'" id="sql_submit">提交
+    </button>
+</form>
+<script>
+    $(function () {
+        var bad = true;
+        $("#sql_submit").on("click", function () {
+            if (bad) {
+                bad = false;
+                var params = $("#sqlForm").serializeArray();
+                $.post("/common/sql/execute", params, function (data) {
+                    if (data.success) {
+                        showMsg(data.msg, 1,function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        showMsg(data.msg, 4);
+                        bad = true;
+                    }
+                }, 'json');
+            }
+        });
+    });
+</script>
+</body>
+</html>

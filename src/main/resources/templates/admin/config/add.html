@@ -1,0 +1,74 @@
+<form id="config_form" class="form-container">
+    <div class="form-row">
+        <input class="easyui-textbox" name="configName" label="配置名称:" labelPosition="top"
+               value="${config.configName!}"
+               ${isEdit && config.isDefault== 'Y' ? 'readonly' : ''}
+        style="width:100%;height:50px">
+    </div>
+    <div class="form-row">
+        <input class="easyui-textbox" name="configKey" label="配置标识:" labelPosition="top"
+               value="${config.configKey!}"
+               ${isEdit && config.isDefault== 'Y' ? 'readonly' : ''}
+        style="width:100%;height:50px">
+    </div>
+    <div class="form-row">
+        <textarea class="easyui-textbox" name="configValue" label="配置值:" labelPosition="top"
+                  multiline="true" style="width:100%;height:100px">${config.configValue!}</textarea>
+    </div>
+    <div class="form-row">
+        <input class="easyui-textbox" name="memo" label="备注:" labelPosition="top"
+               value="${config.memo!}"
+               style="width:100%;height:50px">
+    </div>
+    <!-- 隐藏变量 -->
+    @if(isEdit){
+    <input type="hidden" name="id" value="${config.id!}">
+    @}
+</form>
+<div class="form-footer">
+    @if(isEdit){
+    <button type="button" class="easyui-linkbutton" data-options="iconCls:'icon-save',width:'80px'" id="config_edit">提交
+    </button>
+    @}else{
+    <button type="button" class="easyui-linkbutton" data-options="iconCls:'icon-save',width:'80px'" id="config_add">提交
+    </button>
+    @}
+    <button type="button" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',width:'80px'"
+            id="config_cancel">取消
+    </button>
+</div>
+<script>
+    $(function () {
+        var bad = true;
+
+        $("#config_add").on("click", function () {
+            var url = "/admin/config/add";
+            submit(url);
+        });
+
+        $("#config_edit").on("click", function () {
+            var url = "/admin/config/edit";
+            submit(url);
+        });
+
+        $("#config_cancel").on("click", function () {
+            closeWindow('config_window');
+        });
+
+        function submit(url) {
+            if (bad) {
+                bad = false;
+                var params = $("#config_form").serializeArray();
+                $.post(url, params, function (data) {
+                    if (data.success) {
+                        showMsg(data.msg, 1);
+                        closeWindow('config_window');
+                    } else {
+                        showMsg(data.msg, 4);
+                        bad = true;
+                    }
+                }, 'json');
+            }
+        }
+    });
+</script>

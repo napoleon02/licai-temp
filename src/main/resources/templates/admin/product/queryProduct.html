@@ -1,0 +1,230 @@
+<table id="queryProduct_table"></table>
+<div id="queryProduct_toolbar">
+    <p>
+        <input id="queryProduct_productNo" class="easyui-textbox" style="width:200px" data-options="prompt:'产品ID'">
+        <input id="queryProduct_name" class="easyui-textbox" style="width:200px" data-options="prompt:'产品名称'">
+        <input id="queryProduct_amount" class="easyui-numberbox" style="width:200px" data-options="prompt:'产品金额'">
+        <input id="queryProduct_apr" class="easyui-numberbox" precision="2" style="width:200px"
+               data-options="prompt:'预期年收益'">
+    </p>
+    <p>
+        <input id="queryProduct_bidBeginDate" class="easyui-textbox easyui-datetimebox" data-options="prompt:'投标开始时间'"
+               name="bidBeginDate" style="width:200px" editable="fasle">
+        <input id="queryProduct_bidEndDate" class="easyui-textbox easyui-datetimebox" data-options="prompt:'投标结束时间'"
+               name="bidEndDate" style="width:200px" editable="fasle">
+        <input id="queryProduct_createTime" class="easyui-textbox easyui-datetimebox" data-options="prompt:'最后更新开始时间'"
+               name="createTime" style="width:200px" editable="fasle">
+        <input id="queryProduct_updateTime" class="easyui-textbox easyui-datetimebox" data-options="prompt:'最后更新结束时间'"
+               name="updateTime" style="width:200px" editable="fasle">
+    </p>
+    <p>
+        状态：<select id="queryProduct_status" class="easyui-combobox" name=status style="width:200px;">
+        <option value="">全部</option>
+        <option value="BEGIN">即将开始</option>
+        <option value="DO_BUY">立即抢购</option>
+        <option value="BUY_OVER">抢购结束</option>
+        <option value="COUNT">计息中</option>
+        <option value="EXPIRE">已到期</option>
+        <option value="REFUND">还款中</option>
+        <option value="REFUND_OVER">还款结束</option>
+        <option value="LOSE">已流标</option>
+    </select>
+        <button id="queryProduct_query" type="button" class="easyui-linkbutton" iconCls="icon-search">查询</button>
+        <button id="product_add_button" type="button" class="easyui-linkbutton" iconCls="icon-add">新增产品</button>
+        <button id="product_edit_button" type="button" class="easyui-linkbutton" iconCls="icon-edit">编辑产品</button>
+        <button id="product_remove_button" type="button" class="easyui-linkbutton" iconCls="icon-remove">删除产品</button>
+        <button id="product_redo_button" type="button" class="easyui-linkbutton" iconCls="icon-redo">还款</button>
+    </p>
+</div>
+<script>
+    $(function () {
+        $("#queryProduct_table").datagrid({
+            url: "/admin/product/queryProduct",
+            method: "post",
+            fit: true,
+            border: false,
+            striped: true,
+            nowrap: true,
+            singleSelect: true,
+            idField: "id",
+            pagination: true,
+            rownumbers: true,
+            pageSize: 40,
+            pageList: [40, 60, 80],
+            queryParams: {
+                productNo: $("#queryProduct_productNo").val(),
+                name: $("#queryProduct_name").val(),
+                amount: $("#queryProduct_amount").val(),
+                apr: $("#queryProduct_apr").val(),
+                status: $("#queryProduct_status").val(),
+                createTimeUp: $("#queryProduct_bidBeginDate").val(),
+                createTimeDown: $("#queryProduct_bidEndDate").val(),
+                NewUpTime: $("#queryProduct_createTime").val(),
+                OutUpTime: $("#queryProduct_updateTime").val(),
+            },
+            loadFilter: function (data) {
+                if (data.success) {
+                    return data.data;
+                }
+                return null;
+            },
+            columns: [[
+                {field: "id", hidden: true},
+                {field: "productNo", title: "产品ID", width: "10%", align: "center"},
+                {field: "name", title: "产品名称", width: "10%", align: "center"},
+                {field: "amount", title: "产品金额", width: "10%", align: "center"},
+                {field: "apr", title: "预期年收益%", width: "10%", align: "center"},
+                {field: "minUnit", title: "最小投资单位", width: "10%", align: "center"},
+                {field: "minAmount", title: "最小投资金额", width: "10%", align: "center"},
+                {
+                    field: "status", title: "状态", width: "10%", align: "center",
+                    formatter: function (value) {
+                        if (value == "BEGIN") {
+                            return "即将开始";
+                        } else if (value == "DO_BUY") {
+                            return "立即抢购";
+                        } else if (value == "BUY_OVER") {
+                            return "抢购结束";
+                        } else if (value == "COUNT") {
+                            return "计息中";
+                        } else if (value == "EXPIRE") {
+                            return "到期";
+                        } else if (value == "REFUND") {
+                            return "还款中";
+                        } else if (value == "REFUND_OVER") {
+                            return "还款结束";
+                        } else if (value == "LOSE") {
+                            return "已流标";
+                        } else {
+                            return "未知类型";
+                        }
+                    }
+                },
+                {
+                    field: "bidBeginDate", title: "投标开始时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {
+                    field: "bidEndDate", title: "投标结束时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                //0000
+                {
+                    field: "updateTime", title: "最新操作时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {field: "updatePersonName", title: "操作人", width: "10%", align: "center"},
+                {
+                    field: "createTime", title: "创建时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {field: "createPersonName", title: "创建人", width: "10%", align: "center"},
+            ]],
+            toolbar:
+                "#queryProduct_toolbar"
+        });
+
+        //查询
+        $("#queryProduct_query").on("click", function () {
+            var name = $("#queryProduct_name").val();
+            var productNo = $("#queryProduct_productNo").val();
+            var amount = $("#queryProduct_amount").val();
+            var apr = $("#queryProduct_apr").val();
+            var status = $("#queryProduct_status").val();
+            var createTimeUp = $("#queryProduct_bidBeginDate").val();
+            var createTimeDown = $("#queryProduct_bidEndDate").val();
+            var NewUpTime = $("#queryProduct_createTime").val();
+            var OutUpTime = $("#queryProduct_updateTime").val();
+            var queryParams = $('#queryProduct_table').datagrid('options').queryParams;
+            queryParams.name = name;
+            queryParams.productNo = productNo;
+            queryParams.apr = apr;
+            queryParams.amount = amount;
+            queryParams.status = status;
+            queryParams.createTimeUp = createTimeUp;
+            queryParams.createTimeDown = createTimeDown;
+            queryParams.NewUpTime = NewUpTime;
+            queryParams.OutUpTime = OutUpTime;
+            $('#queryProduct_table').datagrid('reload');
+        });
+
+        /*新增产品*/
+        $("#product_add_button").on("click", function () {
+            var title = "新增产品";
+            var url = "/admin/product/add";
+            addToTabs("main-tabs", url, title, true);
+        });
+
+        /*编辑产品*/
+        $("#product_edit_button").on("click", function () {
+            var row = $("#queryProduct_table").datagrid("getSelected");
+            if (row) {
+                var id = row.id;
+                var title = "编辑产品";
+                var url = "/admin/product/editProduct?id=" + id;
+                addToTabs("main-tabs", url, title, true);
+            }
+        });
+
+        /*删除产品*/
+        $("#product_remove_button").click(function () {
+            var rows = $("#queryProduct_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('提示', '请选中一行数据!');
+            } else {
+                var id = rows[0].id;
+                $.messager.confirm('提示', '确定要删除选中的产品?', function (res) {
+                    if (res) {
+                        $.ajax({
+                            url: "/admin/product/deleteProductById",
+                            type: "get",
+                            data: {
+                                id: id
+                            },
+                            dataType: "json",
+                            success: function (resp) {
+                                $('#queryProduct_table').datagrid('reload');
+                                if (resp.data.success) {
+                                    $.messager.alert('提示', resp.data.msg);
+                                } else {
+                                    $.messager.alert('提示', resp.data.msg);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        /*产品还款*/
+        $("#product_redo_button").click(function () {
+            var rows = $("#queryProduct_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('提示', '请选中一行数据!');
+            } else {
+                /*判断选中的行是不是可以进行还款操作*/
+                var orderStatus = rows[0].status;
+                if (orderStatus == "EXPIRE" || orderStatus == "REFUND") {
+                    var id = rows[0].id;
+                    $.messager.confirm('提示', '确定要对选中的产品进行还款?', function (res) {
+                        if (res) {
+                            createWindow("repay_window", "产品还款", "/admin/product/repay?id=" + id, 440, 300, function () {
+                                $("#queryProduct_table").datagrid("reload");
+                            });
+                        }
+                    });
+                } else {
+                    $.messager.alert('警告', '产品状态只有为已到期及还款中的才可以进行还款操作.');
+                }
+            }
+        });
+    });
+</script>

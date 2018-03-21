@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yongda.licai.system.dal.mapper.InvestOrderDOMapper">
+    <resultMap id="BaseResultMap" type="com.yongda.licai.system.dal.model.InvestOrderDO">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR"/>
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="ORDER_TIME" property="orderTime" jdbcType="TIMESTAMP"/>
+        <result column="PAY_TIME" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="MEMBER_ID" property="memberId" jdbcType="VARCHAR"/>
+        <result column="MEMBER_NAME" property="memberName" jdbcType="VARCHAR"/>
+        <result column="MEMBER_ACCOUNT" property="memberAccount" jdbcType="VARCHAR"/>
+        <result column="MEMBER_PHONE" property="memberPhone" jdbcType="VARCHAR"/>
+        <result column="INVEST_AMOUNT" property="investAmount" jdbcType="DECIMAL"/>
+        <result column="BUY_NUMBER" property="buyNumber" jdbcType="DECIMAL"/>
+        <result column="BUY_FEE" property="buyFee" jdbcType="DECIMAL"/>
+        <result column="EXIT_FEE" property="exitFee" jdbcType="DECIMAL"/>
+        <result column="PLAN_INCOME" property="planIncome" jdbcType="DECIMAL"/>
+        <result column="PLAN_AMOUNT" property="planAmount" jdbcType="DECIMAL"/>
+        <result column="REAL_INCOME" property="realIncome" jdbcType="DECIMAL"/>
+        <result column="REAL_AMOUNT" property="realAmount" jdbcType="DECIMAL"/>
+        <result column="PLAN_INVEST_START_DATE" property="planInvestStartDate" jdbcType="TIMESTAMP"/>
+        <result column="PLAN_INVEST_END_DATE" property="planInvestEndDate" jdbcType="TIMESTAMP"/>
+        <result column="REAL_INVEST_START_DATE" property="realInvestStartDate" jdbcType="TIMESTAMP"/>
+        <result column="REAL_INVEST_END_DATE" property="realInvestEndDate" jdbcType="TIMESTAMP"/>
+        <result column="PLAN_COUNT_START_DATE" property="planCountStartDate" jdbcType="TIMESTAMP"/>
+        <result column="PLAN_COUNT_END_DATE" property="planCountEndDate" jdbcType="TIMESTAMP"/>
+        <result column="REAL_COUNT_START_DATE" property="realCountStartDate" jdbcType="TIMESTAMP"/>
+        <result column="REAL_COUNT_END_DATE" property="realCountEndDate" jdbcType="TIMESTAMP"/>
+        <result column="PLAN_TO_ACCOUNT_DATE" property="planToAccountDate" jdbcType="TIMESTAMP"/>
+        <result column="REAL_TO_ACCOUNT_DATE" property="realToAccountDate" jdbcType="TIMESTAMP"/>
+        <result column="EXIT_DATE" property="exitDate" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="REPAYMENT_TIME" property="repaymentTime" jdbcType="TIMESTAMP"/>
+        <result column="REPAYMENT_MEMO" property="repaymentMemo" jdbcType="VARCHAR"/>
+        <result column="IDCARD_NO" property="idcardNo" jdbcType="VARCHAR"/>
+        <result column="CONTRACT_NO" property="contractNo" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        ID, PRODUCT_ID, ORDER_NO, ORDER_TIME, PAY_TIME, MEMBER_ID, MEMBER_NAME, MEMBER_ACCOUNT,
+        MEMBER_PHONE, INVEST_AMOUNT, BUY_NUMBER, BUY_FEE, EXIT_FEE, PLAN_INCOME, PLAN_AMOUNT,
+        REAL_INCOME, REAL_AMOUNT, PLAN_INVEST_START_DATE, PLAN_INVEST_END_DATE, REAL_INVEST_START_DATE,
+        REAL_INVEST_END_DATE, PLAN_COUNT_START_DATE, PLAN_COUNT_END_DATE, REAL_COUNT_START_DATE,
+        REAL_COUNT_END_DATE, PLAN_TO_ACCOUNT_DATE, REAL_TO_ACCOUNT_DATE, EXIT_DATE, STATUS,
+        CREATE_TIME, UPDATE_TIME, REPAYMENT_TIME, REPAYMENT_MEMO, IDCARD_NO, CONTRACT_NO
+    </sql>
+
+    <resultMap id="DtoResultMap" type="com.yongda.licai.system.dal.dto.InvestOrderDto" extends="BaseResultMap">
+        <result column="product_no" property="productNo" jdbcType="VARCHAR"/>
+        <result column="name" property="productName" jdbcType="VARCHAR"/>
+        <result column="unit" property="unit" jdbcType="VARCHAR"/>
+        <result column="limit" property="limit" jdbcType="DECIMAL"/>
+        <result column="apr" property="apr" jdbcType="DECIMAL"/>
+        <result column="income_mode" property="incomeMode" jdbcType="VARCHAR"/>
+        <result column="protocol_name" property="protocolName" jdbcType="VARCHAR"/>
+        <result column="protocol_file" property="protocolFile" jdbcType="VARCHAR"/>
+        <result column="start_day" property="startDay" jdbcType="TIMESTAMP"/>
+        <result column="start_type" property="startType" jdbcType="VARCHAR"/>
+        <result column="start_type" property="startType" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryAllOrderInfoByPage" resultMap="DtoResultMap">
+        select
+        TMP_INVEST_ORDER_.*,
+        TMP_PRODUCT_.product_no,
+        TMP_PRODUCT_.name,
+        TMP_PRODUCT_.limit,
+        TMP_PRODUCT_.unit,
+        TMP_PRODUCT_.apr,
+        TMP_PRODUCT_.income_mode,
+        TMP_PRODUCT_.protocol_name,
+        TMP_PRODUCT_.protocol_file,
+        TMP_PRODUCT_.start_day,
+        TMP_PRODUCT_.start_type
+        from
+        FP.TMP_INVEST_ORDER TMP_INVEST_ORDER_
+        LEFT JOIN FP.TMP_PRODUCT TMP_PRODUCT_ ON TMP_INVEST_ORDER_.product_id = TMP_PRODUCT_.id
+        <where>
+            <if test="productNo != null and productNo != ''">
+                AND TMP_PRODUCT_.product_no = #{productNo}
+            </if>
+            <if test="productName != null and productName != ''">
+                AND TMP_PRODUCT_.name like concat(concat('%',#{productName}),'%')
+            </if>
+            <if test="productAcount != null and productAcount != ''">
+                AND TMP_PRODUCT_.amount = #{productAcount}
+            </if>
+            <if test="investTimeStart != null and investTimeStart != ''">
+                <![CDATA[ AND to_char(TMP_INVEST_ORDER_.real_invest_start_date,'yyyy-mm-dd') >= #{investTimeStart} ]]>
+            </if>
+            <if test="investTimeEnd != null and investTimeEnd != ''">
+                <![CDATA[ AND to_char(TMP_INVEST_ORDER_.real_invest_end_date,'yyyy-mm-dd') <= #{investTimeEnd} ]]>
+            </if>
+            <if test="updateTimeStart != null and updateTimeStart != ''">
+                <![CDATA[ AND to_char(TMP_INVEST_ORDER_.update_time,'yyyy-mm-dd') >= #{updateTimeStart} ]]>
+            </if>
+            <if test="updateTimeEnd != null and updateTimeEnd != ''">
+                <![CDATA[ AND to_char(TMP_INVEST_ORDER_.real_invest_start_date,'yyyy-mm-dd') <= #{updateTimeEnd} ]]>
+            </if>
+            <if test="status != null and status != ''">
+                AND TMP_INVEST_ORDER_.status = #{status}
+            </if>
+            <if test="memberId != null and memberId != ''">
+                AND TMP_INVEST_ORDER_.member_id = #{memberId}
+            </if>
+            <if test="flag != null and flag == 'HOLD'">
+                AND TMP_INVEST_ORDER_.status IN (2,3,4,5,7)
+            </if>
+            <if test="flag != null and flag == 'PAID'">
+                AND TMP_INVEST_ORDER_.status IN (6,9)
+            </if>
+            <if test="productId != null and productId != ''">
+                AND TMP_INVEST_ORDER_.product_id = #{productId}
+            </if>
+            <if test="takeRecord != null and takeRecord == 'true'">
+                AND TMP_INVEST_ORDER_.status NOT IN (1,8,9)
+            </if>
+        </where>
+        ORDER BY TMP_INVEST_ORDER_.create_time DESC
+    </select>
+
+    <select id="queryOrderDetailsById" resultMap="DtoResultMap">
+         select
+            TMP_INVEST_ORDER_.*,
+            TMP_PRODUCT_.product_no,
+            TMP_PRODUCT_.name,
+            TMP_PRODUCT_.unit,
+            TMP_PRODUCT_.limit,
+            TMP_PRODUCT_.apr,
+            TMP_PRODUCT_.income_mode
+        from
+            FP.TMP_INVEST_ORDER TMP_INVEST_ORDER_
+        LEFT JOIN FP.TMP_PRODUCT TMP_PRODUCT_ ON TMP_INVEST_ORDER_.product_id = TMP_PRODUCT_.id
+        where TMP_INVEST_ORDER_.id = #{id}
+    </select>
+
+    <select id="queryAlreadyBuyAmount" resultType="java.math.BigDecimal">
+        SELECT
+          SUM (invest_amount)
+        FROM
+          FP.TMP_INVEST_ORDER
+        WHERE
+          product_id = #{productId}
+        AND
+          status IN (1,2,3,4,5,6,7)
+    </select>
+
+    <update id="updateOrderStatus">
+        UPDATE
+        FP.TMP_INVEST_ORDER
+        SET
+        STATUS = #{flag}
+        WHERE
+        ID IN
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="queryUnPaymentOrder" resultMap="BaseResultMap">
+        SELECT *
+        FROM TMP_INVEST_ORDER t
+        WHERE t.STATUS = '1'
+        <if test="minute != null">
+            AND ceil((sysdate - to_date(to_char(t.order_time,'YYYY-MM-DD HH24:mi:ss'),'YYYY-MM-DD HH24:mi:ss'))* 24 *
+            60) &gt;= #{minute}
+        </if>
+    </select>
+
+    <select id="queryRealIncomeAndAllIncomeSum" resultMap="DtoResultMap">
+        select
+        TMP_INVEST_ORDER_.*,
+        TMP_PRODUCT_.product_no,
+        TMP_PRODUCT_.name,
+        TMP_PRODUCT_.limit,
+        TMP_PRODUCT_.apr,
+        TMP_PRODUCT_.unit,
+        TMP_PRODUCT_.income_mode,
+        TMP_PRODUCT_.protocol_name,
+        TMP_PRODUCT_.protocol_file,
+        TMP_PRODUCT_.start_day,
+        TMP_PRODUCT_.start_type
+        from
+        FP.TMP_INVEST_ORDER TMP_INVEST_ORDER_
+        LEFT JOIN FP.TMP_PRODUCT TMP_PRODUCT_ ON TMP_INVEST_ORDER_.product_id = TMP_PRODUCT_.id
+        WHERE
+        TMP_INVEST_ORDER_.MEMBER_ID = #{memberId}
+        AND
+        TMP_INVEST_ORDER_.status IN (2,3,4,5,6,7)
+    </select>
+</mapper>

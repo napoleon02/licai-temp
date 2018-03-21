@@ -1,0 +1,265 @@
+<table id="orderManager_table"></table>
+<div id="orderManager_toolbar">
+    <p>
+        <input id="orderManager_productNo" class="easyui-textbox" style="width:200px" data-options="prompt:'产品ID'">
+        <input id="orderManager_productName" class="easyui-textbox" style="width:200px" data-options="prompt:'产品名称'">
+        <input id="orderManager_productAcount" class="easyui-numberbox" style="width:200px"
+               data-options="prompt:'产品金额'">
+    </p>
+    <p>
+        <input id="orderManager_investTimeStart" class="easyui-textbox easyui-datebox" style="width:200px"
+               data-options="prompt:'投资开始时间'" editable="fasle">
+        <input id="orderManager_investTimeEnd" class="easyui-textbox easyui-datebox" style="width:200px"
+               data-options="prompt:'投资结束时间'" editable="fasle">
+        <input id="orderManager_updateTimeStart" class="easyui-textbox easyui-datebox" style="width:200px"
+               data-options="prompt:'最新操作时间开始'" editable="fasle">
+    </p>
+    <P>
+        <input id="orderManager_updateTimeEnd" class="easyui-textbox easyui-datebox" style="width:200px"
+               data-options="prompt:'最新操作时间结束'" editable="fasle">
+        <select id="orderManager_status" class="easyui-combobox" data-options="prompt:'订单状态'">
+            <option value="">--请选择--</option>
+            <option value="1">待付款</option>
+            <option value="2">已付款</option>
+            <option value="3">计息中</option>
+            <option value="4">已到期</option>
+            <option value="5">还款中</option>
+            <option value="6">还款成功</option>
+            <option value="7">还款失败</option>
+            <option value="8">已关闭</option>
+            <option value="9">已退款</option>
+        </select>
+        <button id="orderManager_query" type="button" class="easyui-linkbutton" iconCls="icon-search">查询</button>
+        <button id="orderManager_query_details" type="button" class="easyui-linkbutton" iconCls="icon-tip">查看详情</button>
+        <button id="orderManager_repay" type="button" class="easyui-linkbutton" iconCls="icon-redo">批量还款</button>
+
+        <button id="orderManager_order_close" type="button" class="easyui-linkbutton" iconCls="icon-remove">关闭</button>
+        <button id="orderManager_order_refund" type="button" class="easyui-linkbutton" iconCls="icon-undo">退款</button>
+        <button id="orderManager_order_repay" type="button" class="easyui-linkbutton" iconCls="icon-redo">还款</button>
+    </P>
+</div>
+<script>
+    $(function () {
+        $("#orderManager_table").datagrid({
+            url: "/admin/orderManagement/queryAllOrders",
+            method: "get",
+            fit: true,
+            border: false,
+            striped: true,
+            nowrap: true,
+            singleSelect: false,
+            idField: "id",
+            pagination: true,
+            rownumbers: true,
+            pageSize: 40,
+            pageList: [40, 60, 80],
+            queryParams: {
+                productNo: $("#orderManager_productNo").val(),
+                productName: $("#orderManager_productName").val(),
+                productAcount: $("#orderManager_productAcount").val(),
+                investTimeStart: $("#orderManager_investTimeStart").val(),
+                investTimeEnd: $("#orderManager_investTimeEnd").val(),
+                updateTimeStart: $("#orderManager_updateTimeStart").val(),
+                updateTimeEnd: $("#orderManager_updateTimeEnd").val(),
+                status: $("#orderManager_status").val()
+            },
+            loadFilter: function (data) {
+                if (data.success) {
+                    return data.data;
+                }
+                return null;
+            },
+            columns: [[
+                {field: "ck", checkbox: true},
+                {field: "id", hidden: true},
+                {field: "orderNo", title: "订单号", width: "15%", align: "center"},
+                {field: "productNo", title: "产品ID", width: "10%", align: "center"},
+                {field: "productName", title: "产品名称", width: "15%", align: "center"},
+                {field: "memberAccount", title: "投资账号", width: "10%", align: "center"},
+                {field: "memberName", title: "投资人", width: "10%", align: "center"},
+                {field: "investAmount", title: "投资总金额", width: "10%", align: "center"},
+                {field: "apr", title: "预期年化收益（%）", width: "10%", align: "center"},
+                {field: "planIncome", title: "预计到期利息", width: "10%", align: "center"},
+                {field: "realAmount", title: "到期总金额", width: "10%", align: "center"},
+                {
+                    field: "createTime", title: "订单时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {
+                    field: "status", title: "状态", width: "10%", align: "center",
+                    formatter: function (value) {
+                        if (value == "1") {
+                            return "待付款";
+                        } else if (value == "2") {
+                            return "已付款";
+                        } else if (value == "3") {
+                            return "计息中";
+                        } else if (value == "4") {
+                            return "已到期";
+                        } else if (value == "5") {
+                            return "还款中";
+                        } else if (value == "6") {
+                            return "还款成功";
+                        } else if (value == "7") {
+                            return "还款失败";
+                        } else if (value == "8") {
+                            return "已关闭";
+                        } else if (value == "9") {
+                            return "已退款";
+                        } else {
+                            return "未知类型";
+                        }
+                    }
+                },
+            ]],
+            toolbar:
+                "#orderManager_toolbar"
+        });
+
+        //查询
+        $("#orderManager_query").on("click", function () {
+            var productNo = $("#orderManager_productNo").val();
+            var productName = $("#orderManager_productName").val();
+            var productAcount = $("#orderManager_productAcount").val();
+            var investTimeStart = $("#orderManager_investTimeStart").val();
+            var investTimeEnd = $("#orderManager_investTimeEnd").val();
+            var updateTimeStart = $("#orderManager_updateTimeStart").val();
+            var updateTimeEnd = $("#orderManager_updateTimeEnd").val();
+            var status = $("#orderManager_status").val();
+            var queryParams = $('#orderManager_table').datagrid('options').queryParams;
+            queryParams.productNo = productNo;
+            queryParams.productName = productName;
+            queryParams.productAcount = productAcount;
+            queryParams.investTimeStart = investTimeStart;
+            queryParams.investTimeEnd = investTimeEnd;
+            queryParams.updateTimeStart = updateTimeStart;
+            queryParams.updateTimeEnd = updateTimeEnd;
+            queryParams.status = status;
+            $('#orderManager_table').datagrid('reload');
+        });
+
+        //查看详情
+        $("#orderManager_query_details").on("click", function () {
+            var rows = $("#orderManager_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('提示', '请选中一行数据!');
+            } else {
+                var id = rows[0].id;
+                var url = "/admin/orderManagement/queryOrderDetailsById" + "?id=" + id;
+                createWindow("detail_window", "订单详情", url, 800, 600, function () {
+                    $('#orderManager_table').datagrid('reload');
+                });
+            }
+        });
+
+        /*批量还款处理*/
+        $("#orderManager_repay").on("click", function () {
+            var rows = $("#orderManager_table").datagrid("getSelections");
+            if (rows.length == 0) {
+                $.messager.alert('警告', '请选择至少一条订单数据进行该操作!');
+            } else {
+                var ids = "";
+                var status = "";
+                for (var i = 0; i < rows.length; i++) {
+                    ids += rows[i].id + ",";
+                    status += rows[i].status + ",";
+                }
+                if (status.indexOf("1") != -1 || status.indexOf("2") != -1 || status.indexOf("3") != -1 || status.indexOf("6") != -1 || status.indexOf("8") != -1 || status.indexOf("9") != -1) {
+                    $.messager.alert('警告', '非已到期订单,不能进行还款操作,请重新选择订单!');
+                } else {
+                    createWindow("repay_window", "批量订单还款", "/admin/orderManagement/repay?orderIds=" + ids, 440, 300, function () {
+                        $("#orderManager_table").datagrid("reload");
+                    });
+                }
+            }
+        });
+
+        /*订单关闭*/
+        $("#orderManager_order_close").on("click", function () {
+            var rows = $("#orderManager_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('警告', '请选择一条订单数据进行该操作!');
+            } else {
+                if (rows[0].status == 1) {
+                    $.messager.confirm('警告', '确定要关闭此订单?', function (res) {
+                        if (res) {
+                            var orderId = rows[0].id;
+                            $.ajax({
+                                url: "/admin/orderManagement/closeOrder",
+                                type: "post",
+                                data: {
+                                    id: orderId
+                                },
+                                dataType: "json",
+                                success: function (resp) {
+                                    $('#orderManager_table').datagrid('reload');
+                                    if (resp.code == 200) {
+                                        $.messager.alert('提示', resp.msg);
+                                    } else {
+                                        $.messager.alert('警告', resp.msg);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    $.messager.alert('警告', '只有待付款的订单才可以进行该操作!');
+                }
+            }
+        });
+
+        /*订单退款*/
+        $("#orderManager_order_refund").on("click", function () {
+            var rows = $("#orderManager_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('警告', '请选择一条订单数据进行该操作!');
+            } else {
+                if (rows[0].status == 2) {
+                    $.messager.confirm('警告', '确定要对此订单进行退款操作?', function (res) {
+                        if (res) {
+                            var orderId = rows[0].id;
+                            $.ajax({
+                                url: "/admin/orderManagement/refundOrder",
+                                type: "post",
+                                data: {
+                                    id: orderId
+                                },
+                                dataType: "json",
+                                success: function (resp) {
+                                    $('#orderManager_table').datagrid('reload');
+                                    $.messager.alert('提示', resp.data);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    $.messager.alert('警告', '只有已付款状态的订单才可以进行该操作!');
+                }
+            }
+        });
+
+        /*订单还款*/
+        $("#orderManager_order_repay").on("click", function () {
+            var rows = $("#orderManager_table").datagrid("getSelections");
+            if (rows.length != 1) {
+                $.messager.alert('警告', '请选择一条订单数据进行该操作!');
+            } else {
+                if (rows[0].status == 4 || rows[0].status == 5 || rows[0].status == 7) {
+                    var orderId = rows[0].id;
+                    $.messager.confirm('警告', '确定要对此订单进行还款处理?', function (res) {
+                        if (res) {
+                            createWindow("repay_window", "订单还款", "/admin/orderManagement/repay?orderIds=" + orderId, 440, 300, function () {
+                                $("#orderManager_table").datagrid("reload");
+                            });
+                        }
+                    });
+                } else {
+                    $.messager.alert('警告', '只有已到期、还款中、还款失败的订单才可以进行此操作!');
+                }
+            }
+        });
+    });
+
+</script>

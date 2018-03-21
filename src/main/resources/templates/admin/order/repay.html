@@ -1,0 +1,61 @@
+<form id="product_repay_form" class="form-container">
+    <P>
+        <input id="repay_orderIds" type="hidden" name="id" value="${orderIds}">
+        还款状态:<select id="repay_order_status" class="easyui-combobox" name="status" style="width:200px;">
+        <option value="6">还款成功</option>
+    </select>
+    </P>
+    <P>
+        还款时间:<input id="repay_order_repaymentTime" class="easyui-textbox easyui-datetimebox"
+                    data-options="prompt:'还款时间'"
+                    name="repaymentTime" style="width:200px" editable="fasle">
+    </P>
+    <p>
+        备注:<textarea id="repay_order_remark" name="repaymentMemo"
+                     required="false"
+                     multiline="true"
+                     data-options="prompt:'',validType:'length[0,60]'" style="width:195px;height:80px;margin-left: 23px"></textarea>
+    </p>
+    <P align="center">
+        <button id="order_confirm_btn" type="button" class="easyui-linkbutton" iconCls="icon-save">确定</button>
+        <button id="order_cancel_btn" type="button" class="easyui-linkbutton" iconCls="icon-cancel">取消</button>
+    </P>
+</form>
+
+<script>
+    $(function () {
+
+        $("#order_cancel_btn").on("click", function () {
+            closeWindow('repay_window');
+        });
+
+        $("#order_confirm_btn").on("click", function () {
+            $.ajax({
+                url: "/admin/orderManagement/repay",
+                type: "post",
+                data: {
+                    id: $("#repay_orderIds").val(),
+                    status: $("#repay_order_status").val(),
+                    repaymentTime: $("#repay_order_repaymentTime").val(),
+                    repaymentMemo: $("#repay_order_remark").val()
+                },
+                dataType: "json",
+                success: function (resp) {
+                    $('#orderManager_table').datagrid('reload');
+                    closeWindow('repay_window');
+                    if (resp.data.success) {
+                        $.messager.alert("提示", resp.data.msg);
+                    } else {
+                        $.messager.alert("警告", resp.data.msg);
+                    }
+                },
+                error: function (errorMsg) {
+                    closeWindow('repay_window');
+                    $.messager.alert("提示", "产品还款出现异常.");
+                }
+            });
+        });
+
+
+    })
+</script>

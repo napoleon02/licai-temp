@@ -1,0 +1,66 @@
+<form id="createProduct_form" class="form-container">
+    <P>
+        <input id="repay_productId" type="hidden" name="id" value="${productId}">
+        还款状态:<select id="repay_product_status" class="easyui-combobox" name="status" style="width:200px;">
+        <option value="REFUND_OVER">还款成功</option>
+    </select>
+    </P>
+    <P>
+        还款时间:<input id="repay_product_repaymentTime" class="easyui-textbox easyui-datetimebox"
+                    data-options="prompt:'还款时间'"
+                    name="repaymentTime" style="width:200px" editable="fasle">
+    </P>
+    <p>
+        备注:<textarea id="repay_product_remark" class="text_remark" name="repaymentMemo"
+                     required="false"
+                     multiline="true"
+                     data-options="prompt:'',validType:'length[0,60]'" style="width:195px;height:80px;margin-left: 23px;"></textarea>
+    </p>
+    <P align="center">
+        <button id="product_confirm_btn" type="button" class="easyui-linkbutton" iconCls="icon-save">确定</button>
+        <button id="product_cancel_btn" type="button" class="easyui-linkbutton" iconCls="icon-cancel">取消</button>
+    </P>
+</form>
+
+<script>
+    $(function () {
+
+        $("#product_cancel_btn").on("click", function () {
+            closeWindow('repay_window');
+        });
+
+        $("#product_confirm_btn").on("click", function () {
+            $.ajax({
+                url: "/admin/product/productRepayById",
+                type: "post",
+                data: {
+                    id: $("#repay_productId").val(),
+                    status: $("#repay_product_status").val(),
+                    repaymentTime: $("#repay_product_repaymentTime").val(),
+                    repaymentMemo: $("#repay_product_remark").val()
+                },
+                dataType: "json",
+                success: function (resp) {
+                    $('#queryProduct_table').datagrid('reload');
+                    closeWindow('repay_window');
+                    if (resp.data.success) {
+                        $.messager.alert("提示", resp.data.msg);
+                    }else{
+                        $.messager.alert("警告", resp.data.msg);
+                    }
+                },
+                error: function (errorMsg) {
+                    closeWindow('repay_window');
+                    $.messager.alert("提示", "产品还款.");
+                }
+            });
+        });
+
+
+    })
+</script>
+<style>
+    #repay_product_remark{
+        margin-left: 23px;
+    }
+</style>

@@ -1,0 +1,219 @@
+<table id="queryUpOrDown_table"></table>
+
+<div id="queryUpOrDown_toolbar">
+
+    <p>
+        <input id="queryUpOrDown_productNo" class="easyui-textbox" style="width:200px" data-options="prompt:'产品ID'">
+        <input id="queryUpOrDown_name" class="easyui-textbox" style="width:200px" data-options="prompt:'产品名称'">
+        <input id="queryUpOrDown_amount" class="easyui-numberbox" style="width:200px" data-options="prompt:'产品金额'">
+        <input id="queryUpOrDown_apr" class="easyui-numberbox" precision="2" style="width:200px"
+               data-options="prompt:'年利率'">
+    </p>
+    <p>
+        <input id="queryUpOrDown_bidBeginDate" class="easyui-textbox easyui-datetimebox" data-options="prompt:'投标开始时间'"
+               name="bidBeginDate" style="width:200px" editable="fasle">
+        <input id="queryUpOrDown_bidEndDate" class="easyui-textbox easyui-datetimebox" data-options="prompt:'投标结束时间'"
+               name="bidEndDate" style="width:200px" editable="fasle">
+        <input id="queryUpOrDown_createTime" class="easyui-textbox easyui-datetimebox" data-options="prompt:'最后更新开始时间'"
+               name="createTime" style="width:200px" editable="fasle">
+        <input id="queryUpOrDown_updateTime" class="easyui-textbox easyui-datetimebox" data-options="prompt:'最后更新结束时间'"
+               name="updateTime" style="width:200px" editable="fasle">
+    </p>
+    <p>
+        状态：<select id="queryUpOrDown_onlineStatus" class="easyui-combobox" name=onlineStatus style="width:200px;">
+        <option value="">全部</option>
+        <option value="WAIT">待上架</option>
+        <option value="UP">已上架</option>
+        <option value="DOWN">已下架</option>
+    </select>
+        <button id="queryUpOrDown_query" type="button" class="easyui-linkbutton" iconCls="icon-search">查询</button>
+        <button id="queryUpOrDown_ProductUp" type="button" class="easyui-linkbutton" iconCls="icon-add">上架</button>
+        <button id="queryUpOrDown_ProductDown" type="button" class="easyui-linkbutton" iconCls="icon-remove">下架</button>
+        <button id="queryUpOrDown_Productdetails" type="button" class="easyui-linkbutton" iconCls="icon-tip">查看详情
+        </button>
+    </p>
+</div>
+<script>
+    $(function () {
+        $("#queryUpOrDown_table").datagrid({
+            url: "/admin/product/queryProduct",
+            method: "post",
+            fit: true,
+            border: false,
+            striped: true,
+            nowrap: true,
+            singleSelect: true,
+            idField: "id",
+            pagination: true,
+            rownumbers: true,
+            pageSize: 40,
+            pageList: [40, 60, 80],
+            queryParams: {
+                productNo: $("#queryUpOrDown_productNo").val(),
+                name: $("#queryUpOrDown_name").val(),
+                amount: $("#queryUpOrDown_amount").val(),
+                apr: $("#queryUpOrDown_apr").val(),
+                onlineStatus: $("#queryUpOrDown_onlineStatus").val(),
+                createTimeUp: $("#queryUpOrDown_bidBeginDate").val(),
+                createTimeDown: $("#queryUpOrDown_bidEndDate").val(),
+                NewUpTime: $("#queryUpOrDown_createTime").val(),
+                OutUpTime: $("#queryUpOrDown_updateTime").val(),
+            },
+            loadFilter: function (data) {
+                if (data.success) {
+                    return data.data;
+                }
+                return null;
+            },
+            columns: [[
+                {field: "id", hidden: true},
+                {field: "productNo", title: "产品ID", width: "10%", align: "center"},
+                {field: "name", title: "产品名称", width: "10%", align: "center"},
+                {field: "amount", title: "产品金额", width: "10%", align: "center"},
+                {field: "apr", title: "预期年收益%", width: "10%", align: "center"},
+                {
+                    field: "bidBeginDate", title: "投标开始时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {
+                    field: "bidEndDate", title: "投标结束时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {field: "minUnit", title: "最小投资单位", width: "10%", align: "center"},
+                {field: "maxAmount", title: "最大投资金额", width: "10%", align: "center"},
+                {
+                    field: "onlineStatus", title: "状态", width: "10%", align: "center",
+                    formatter: function (value) {
+                        if (value == "WAIT") {
+                            return "待上架";
+                        } else if (value == "UP") {
+                            return "已上架";
+                        } else if (value == "DOWN") {
+                            return "已下架";
+                        } else {
+                        }
+                    }
+                },
+                {
+                    field: "updateTime", title: "最新操作时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {field: "updatePersonName", title: "最新操作人", width: "10%", align: "center"},
+
+                {
+                    field: "createTime", title: "创建时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                },
+                {field: "createPersonName", title: "创建人", width: "10%", align: "center"},
+            ]],
+            toolbar:
+                "#queryUpOrDown_toolbar"
+        });
+
+        //查询
+        $("#queryUpOrDown_query").on("click", function () {
+            var name = $("#queryUpOrDown_name").val();
+            var productNo = $("#queryUpOrDown_productNo").val();
+            var amount = $("#queryUpOrDown_amount").val();
+            var apr = $("#queryUpOrDown_apr").val();
+            var onlineStatus = $("#queryUpOrDown_onlineStatus").val();
+            var createTimeUp = $("#queryUpOrDown_bidBeginDate").val();
+            var createTimeDown = $("#queryUpOrDown_bidEndDate").val();
+            var NewUpTime = $("#queryUpOrDown_createTime").val();
+            var OutUpTime = $("#queryUpOrDown_updateTime").val();
+            var queryParams = $('#queryUpOrDown_table').datagrid('options').queryParams;
+            queryParams.name = name;
+            queryParams.productNo = productNo;
+            queryParams.apr = apr;
+            queryParams.amount = amount;
+            queryParams.onlineStatus = onlineStatus;
+            queryParams.createTimeUp = createTimeUp;
+            queryParams.createTimeDown = createTimeDown;
+            queryParams.NewUpTime = NewUpTime;
+            queryParams.OutUpTime = OutUpTime;
+            $('#queryUpOrDown_table').datagrid('reload');
+        });
+
+        //上架
+        $("#queryUpOrDown_ProductUp").on("click", function () {
+            var row = $("#queryUpOrDown_table").datagrid("getSelected");
+            if(row!=null||row!=undefined){
+                if(row.onlineStatus== "DOWN"||row.onlineStatus== "WAIT"){
+                    $.messager.confirm('警告', '确定要对此产品进行上架操作?', function (res) {
+                        if (res) {
+                            var row = $("#queryUpOrDown_table").datagrid("getSelected");
+                            if (row) {
+                                var id = row.id;
+                                var status = "UP";
+                                var url = "/admin/product/queryUpOrDownConfirm";
+                                $.get(url, {"id": id, "status": status}, function (data) {
+                                    if (data.success) {
+                                        $("#queryUpOrDown_table").datagrid("reload");
+                                        showMsg(data.msg, 1);
+                                    } else {
+                                        showMsg(data.msg, 4);
+                                    }
+                                }, "json");
+                            }
+                        }
+                    });
+                }else{
+                    $.messager.alert('提示', '只能对待上架、下架状态的产品进行上架操作!');
+                }
+            }else{
+                $.messager.alert('提示', '请选中一条数据!');
+            }
+        });
+
+        //下架
+        $("#queryUpOrDown_ProductDown").on("click", function () {
+            var row = $("#queryUpOrDown_table").datagrid("getSelected");
+            if(row!=null||row!=undefined){
+                if(row.onlineStatus=="UP"){
+                    $.messager.confirm('警告', '确定要对此产品进行下架操作?', function (res) {
+                        if (res) {
+                            var row = $("#queryUpOrDown_table").datagrid("getSelected");
+                            if (row) {
+                                var id = row.id;
+                                var status = "DOWN";
+                                var url = "/admin/product/queryUpOrDownConfirm";
+                                $.get(url, {"id": id, "status": status}, function (data) {
+                                    if (data.success) {
+                                        $("#queryUpOrDown_table").datagrid("reload");
+                                        showMsg(data.msg, 1);
+                                    } else {
+                                        showMsg(data.msg, 4);
+                                    }
+                                }, "json");
+                            }
+                        }
+                    });
+                }else{
+                    $.messager.alert('提示', '只能对上架状态的产品进行上架操作!');
+                }
+            }else{
+                $.messager.alert('提示', '请选中一条数据!');
+            }
+        });
+
+        //查看详情
+        $("#queryUpOrDown_Productdetails").on("click", function () {
+            var row = $("#queryUpOrDown_table").datagrid("getSelected");
+            if (row) {
+                var id = row.id;
+                var url = "/admin/product/queryProductDetailsById" + "?id=" + id;
+                createWindow("productDetail_window", "产品详情", url, 800, 600, function () {
+                    $("#queryUpOrDown_table").datagrid("reload");
+                });
+            }
+        });
+    });
+</script>

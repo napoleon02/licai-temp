@@ -1,0 +1,115 @@
+<table id="queryConfig_table"></table>
+<div id="queryConfig_toolbar">
+    <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td>
+                <a id="config_add_btn" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain">
+                        <span class="l-btn-left l-btn-icon-left">
+                            <span class="l-btn-text">添加</span>
+                            <span class="l-btn-icon icon-add">&nbsp;</span>
+                        </span>
+                </a>
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <a id="config_edit_btn" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain">
+                        <span class="l-btn-left l-btn-icon-left">
+                            <span class="l-btn-text">编辑</span>
+                            <span class="l-btn-icon icon-edit">&nbsp;</span>
+                        </span>
+                </a>
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <a id="config_delete_btn" href="javascript:void(0)" class="l-btn l-btn-small l-btn-plain">
+                        <span class="l-btn-left l-btn-icon-left">
+                            <span class="l-btn-text">删除</span>
+                            <span class="l-btn-icon icon-cut">&nbsp;</span>
+                        </span>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    $(function () {
+        $("#queryConfig_table").datagrid({
+            url: "/admin/config/queryConfig",
+            method: "post",
+            fit: true,
+            border: false,
+            striped: true,
+            nowrap: true,
+            singleSelect: true,
+            idField: "id",
+            rownumbers: true,
+            loadFilter: function (data) {
+                if (data.success) {
+                    return data.data;
+                }
+                return null;
+            },
+            columns: [[
+                {field: "id", hidden: true},
+                {field: "configName", title: "配置名称", width: "15%", halign: "center", align: "left"},
+                {field: "configKey", title: "配置标识", width: "15%", halign: "center", align: "left"},
+                {field: "configValue", title: "配置值", width: "50%", halign: "center", align: "left"},
+                {field: "memo", title: "备注", width: "20%", halign: "center", align: "left"},
+            ]],
+            toolbar:
+                "#queryConfig_toolbar"
+        });
+
+        //添加配置
+        $("#config_add_btn").on("click", function () {
+            createWindow("config_window", "添加", "/admin/config/add", 800, 600, function () {
+                $("#queryConfig_table").datagrid("reload");
+            });
+        });
+
+        //修改配置
+        $("#config_edit_btn").on("click", function () {
+            var row = $("#queryConfig_table").datagrid("getSelected");
+            if (row) {
+                var id = row.id;
+                var url = "/admin/config/edit" + "?id=" + id;
+                createWindow("config_window", "编辑", url, 800, 600, function () {
+                    $("#queryConfig_table").datagrid("reload");
+                });
+            }
+        });
+
+        /**
+         * 删除配置
+         */
+        $("#config_delete_btn").on("click", function () {
+            var row = $("#queryConfig_table").datagrid("getSelected");
+            if (row) {
+                var index = $("#queryConfig_table").datagrid("getRowIndex", row);
+                var id = row.id;
+                var isDefault = row.isDefault;
+                if ("Y" == isDefault) {
+                    showMsg("系统配置不允许删除", 4);
+                } else {
+                    $.messager.confirm("提示", "你确定要删除吗?", function (r) {
+                        if (r) {
+                            var url = "/admin/config/delete";
+                            $.post(url, {"id": id}, function (data) {
+                                if (data.success) {
+                                    $("#queryConfig_table").datagrid("deleteRow", index);
+                                    showMsg(data.msg, 1);
+                                } else {
+                                    showMsg(data.msg, 4);
+                                }
+                            }, "json");
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>

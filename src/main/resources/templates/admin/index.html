@@ -1,0 +1,116 @@
+@layout("/admin/layout/commonLayout.html"){
+@var admin = session['ADMIN_SESSION_KEY'];
+<body class="easyui-layout">
+<div id="copy"></div>
+<div data-options="region:'north'" style="height:40px;border-top: none;overflow: hidden;">
+    <div class="top-container">
+        <div class="top-logo">
+            <a href="/admin/index">
+                <h1>永达金融理财平台</h1>
+            </a>
+        </div>
+        <div class="top-menu">
+            <span class="welcome">欢迎您：${admin.name}</span>
+            <a href="javascript:void(0);" id="editPwdBtn" class="easyui-linkbutton"
+               data-options="plain:true,iconCls:'icon-save'">修改密码</a>
+            <a href="/admin/login/logout" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出</a>
+        </div>
+    </div>
+</div>
+<div data-options="region:'west',split:true,hideCollapsedContent:false" title="系统导航" style="width:250px;">
+    <div class="easyui-accordion" border="false" style="height: 100%;">
+
+        <div title="资产管理">
+            <ul class="easyui-tree main-menu">
+                <li>
+                    <a href="javascript:void(0);" data-href="/admin/product/queryProduct" data-title="产品管理" data-inner="true">
+                        产品管理
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" data-href="/admin/product/queryUpOrDown" data-title="产品上下架" data-inner="true">
+                        产品上下架
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" data-href="/admin/orderManagement/initPage" data-title="产品订单管理"
+                       data-inner="true">
+                        产品订单管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div title="系统管理">
+            <ul class="easyui-tree main-menu">
+                <!--<li>
+                    <a href="javascript:void(0);" data-href="/admin/config/queryConfig" data-title="系统配置"
+                       data-inner="true">
+                        系统配置
+                    </a>
+                </li>-->
+                <li>
+                    <a href="javascript:void(0);" data-href="/admin/manager/queryManager" data-title="系统管理员"
+                       data-inner="true">
+                        系统管理员
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+<div data-options="region:'center'" border="false">
+    <div id="main-tabs" class="easyui-tabs" fit="true" tools="#tab-tools">
+        <div title="控制台" href="/admin/console" cache="false"></div>
+    </div>
+</div>
+<div id="tab-tools">
+    <a href="javascript:void(0)" class="easyui-linkbutton" id="tabs_reload"
+       data-options="plain:true,iconCls:'icon-reload'">刷新</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" id="tabs_close" data-options="plain:true,iconCls:'icon-no'">关闭</a>
+</div>
+<script>
+    $(function () {
+        $.ajaxSetup({
+            complete: function (XMLHttpRequest) {
+                var timeout = XMLHttpRequest.getResponseHeader("x-session-timeout");
+                if (timeout === 'TRUE') {
+                    location.href = "/admin/login";
+                }
+            }
+        });
+
+        $(".main-menu div").on("click", function () {
+            var _a = $(this).find("a");
+            if (_a) {
+                var title = _a.data("title");
+                var isInner = _a.data("inner");
+                var url = _a.data("href");
+                addToTabs("main-tabs", url, title, isInner);
+            }
+        });
+
+        $("#tabs_reload").on("click", function () {
+            var tab = $('#main-tabs').tabs('getSelected');
+            tab.panel('refresh');
+        });
+
+        $("#tabs_close").on("click", function () {
+            var tab = $('#main-tabs').tabs('getSelected');
+            if (tab) {
+                var index = $('#main-tabs').tabs('getTabIndex', tab);
+                if (index > 0) {
+                    $('#main-tabs').tabs("close", index);
+                }
+            }
+        });
+
+        //修改密码
+        $("#editPwdBtn").on("click", function () {
+            createWindow("editPwd_window", "修改密码", "/admin/manager/editPwd", 800, 600);
+        });
+    });
+</script>
+</body>
+@}

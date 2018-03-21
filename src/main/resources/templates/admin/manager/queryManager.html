@@ -1,0 +1,158 @@
+<table id="queryManager_table"></table>
+<div id="queryManager_toolbar">
+    <table cellspacing="0" cellpadding="0">
+        <tbody>
+        <tr>
+            <td>
+                <input id="queryManager_account" class="easyui-textbox" style="width:200px" data-options="prompt:'帐号'">
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <input id="queryManager_name" class="easyui-textbox" style="width:200px" data-options="prompt:'姓名'">
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <button id="queryManager_query" type="button" class="easyui-linkbutton" iconCls="icon-search">查询</button>
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <button id="queryManager_add" type="button" class="easyui-linkbutton" iconCls="icon-add">添加</button>
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <button id="queryManager_resetPwd" type="button" class="easyui-linkbutton" iconCls="icon-reload">重置密码</button>
+            </td>
+            <td>
+                <div class="datagrid-btn-separator"></div>
+            </td>
+            <td>
+                <button id="queryManager_disable" type="button" class="easyui-linkbutton" iconCls="icon-lock">禁/启</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function () {
+        $("#queryManager_table").datagrid({
+            url: "/admin/manager/queryManager",
+            method: "post",
+            fit: true,
+            border: false,
+            striped: true,
+            nowrap: true,
+            singleSelect: true,
+            idField: "id",
+            pagination: true,
+            rownumbers: true,
+            pageSize: 40,
+            pageList: [40, 60, 80],
+            queryParams: {
+                name: $("#queryManager_name").val(),
+                account: $("#queryManager_account").val()
+            },
+            loadFilter: function (data) {
+                if (data.success) {
+                    return data.data;
+                }
+                return null;
+            },
+            columns: [[
+                {field: "id", hidden: true},
+                {field: "account", title: "帐号", width: "15%", align: "center"},
+                {field: "name", title: "姓名", width: "15%", align: "center"},
+                {
+                    field: "isDisable", title: "状态", width: "10%", align: "center",
+                    formatter: function (value) {
+                        return value == "Y" ? "禁用" : "启用";
+                    }
+                },
+                {
+                    field: "createTime", title: "创建时间", width: "15%", align: "center",
+                    formatter: function (value) {
+                        return $.format.date(new Date(value), 'yyyy-MM-dd HH:mm:ss');
+                    }
+                }
+            ]],
+            toolbar:
+                "#queryManager_toolbar"
+        });
+
+        //查询
+        $("#queryManager_query").on("click", function () {
+            var name = $("#queryManager_name").val();
+            var account = $("#queryManager_account").val();
+            var queryParams = $('#queryManager_table').datagrid('options').queryParams;
+            queryParams.name = name;
+            queryParams.account = account;
+            $('#queryManager_table').datagrid('reload');
+        });
+
+        //添加用户
+        $("#queryManager_add").on("click", function () {
+            createWindow("createUser_window", "添加用户", "/admin/manager/add", 800, 600, function () {
+                $("#queryManager_table").datagrid("reload");
+            });
+        });
+
+        //重置密码
+        $("#queryManager_resetPwd").on("click", function () {
+            var row = $("#queryManager_table").datagrid("getSelected");
+            if (row) {
+                var id = row.id;
+                $.messager.confirm("提示", "重置后密码为：88888888", function (r) {
+                    if (r) {
+                        var url = "/admin/manager/resetPwd";
+                        $.post(url, {"id": id}, function (data) {
+                            if (data.success) {
+                                showMsg(data.msg, 1);
+                            } else {
+                                showMsg(data.msg, 4);
+                            }
+                        }, "json");
+                    }
+                });
+            } else {
+                showMsg("请选择一条记录", 4);
+            }
+        });
+
+        //禁用
+        $("#queryManager_disable").on("click", function () {
+            var row = $("#queryManager_table").datagrid("getSelected");
+            if (row) {
+                var id = row.id;
+                var status = row.isDisable;
+                var msg = "你确定要禁用该用户吗？";
+                var flag = "Y";
+                if (status == "Y") {
+                    msg = "你确定要启用该用户吗？";
+                    flag = "N";
+                }
+                $.messager.confirm("提示", msg, function (r) {
+                    if (r) {
+                        var url = "/admin/manager/disable";
+                        $.post(url, {"id": id, "flag": flag}, function (data) {
+                            if (data.success) {
+                                $("#queryManager_table").datagrid("reload");
+                                showMsg(data.msg, 1);
+                            } else {
+                                showMsg(data.msg, 4);
+                            }
+                        }, "json");
+                    }
+                });
+            } else {
+                showMsg("请选择一条记录", 4);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,16 @@
+@if(isNotEmpty(childMenu)){
+<ul class="easyui-tree main-menu">
+    @for(menu in childMenu){
+    <li>
+        @if(isNotEmpty(menu.childList)){
+            <span>${menu.resName}</span>
+            @include("/layout/childMenu.html",{"childMenu":menu.childList}){}
+        @}else{
+            <a href="javascript:void(0);" data-href="${menu.resUrl}" data-title="${menu.resName}" data-inner="${menu.isSystem == 'Y' ? true : false}">
+                ${menu.resName}
+            </a>
+        @}
+    </li>
+    @}
+</ul>
+@}

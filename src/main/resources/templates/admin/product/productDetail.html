@@ -1,0 +1,142 @@
+<form id="detail_form" class="form-container">
+    <div style="overflow:hidden">
+        <div class="leftBox">
+            <div class="form-row">
+                <label>产品ID:</label> ${detail.productNo!}
+            </div>
+            <div class="form-row">
+                @if(detail.unit == "DAY"){
+                <label>产品期限: ${detail.limit!}天</label>
+                @}else if(detail.unit == "MONTH"){
+                <label>产品期限: ${detail.limit!}月</label>
+                @}else{
+                <label>产品期限: ${detail.limit!}年</label>
+                @}
+            </div>
+            <div class="form-row">
+                <label> 预期年化收益率%:</label> ${detail.apr!}
+            </div>
+            <div class="form-row">
+                @if(detail.startType == "T+1"){
+                <label>起息日类型:</label> ${detail.startType!}
+                @}else if(detail.startType == "T+2"){
+                <label>起息日类型:</label> ${detail.startType!}
+                @}else if(detail.startType == "T+3"){
+                <label>起息日类型:</label> ${detail.startType!}
+                @}else if(detail.startType == "direct"){
+                <label>起息日:</label> ${detail.startDay,"yyyy-MM-dd HH:mm:ss"}
+                @}
+            </div>
+            <div class="form-row">
+                <label>最小投资单位(元):</label> ${detail.minUnit!}
+            </div>
+            <div class="form-row">
+                <label>投标开始时间: ${detail.bidBeginDate,"yyyy-MM-dd HH:mm:ss"}</label>
+            </div>
+            <div class="form-row">
+                <label>投标结束时间: ${detail.bidEndDate,"yyyy-MM-dd HH:mm:ss"}</label>
+            </div>
+            <div class="form-row">
+                <label> 最小投资金额(元):</label> ${detail.minAmount!}
+            </div>
+            <div class="form-row">
+                <label> 最大投资金额(元):</label> ${detail.maxAmount!}
+            </div>
+            <div class="form-row">
+                <label>起息日开始时间: ${detail.startDay,"yyyy-MM-dd HH:mm:ss"}</label>
+            </div>
+            <div class="form-row">
+                <label>计息结束时间: ${detail.countOverDate,"yyyy-MM-dd HH:mm:ss"}</label>
+            </div>
+            <div class="form-row">
+                @if(detail.isEarlyEnd == "N"){
+                <label>是否提前结束: 否</label>
+                @}else if(detail.isEarlyEnd == "Y"){
+                <label>是否提前结束: 是</label>
+                @}
+            </div>
+        </div>
+        <div class="rightBox">
+            <div class="form-row">
+                <label id="orderTime">产品名称:</label> ${detail.name!}
+            </div>
+            <div class="form-row">
+                <label>产品金额: ${detail.amount!}</label>
+            </div>
+            <div class="form-row">
+                <label>产品状态:</label>
+                @if(detail.onlineStatus == "WAIT"){
+                待上架
+                @}else if(detail.onlineStatus == "UP"){
+                上架
+                @}else if(detail.onlineStatus == "DOWN"){
+                下架
+                @}
+            </div>
+            <div class="form-row">
+                <label>收益说明:</label> ${detail.incomeDesc!}
+            </div>
+            <div class="form-row">
+                <label>收益支付方式:</label>
+                @if(detail.incomeMode == "DAY"){
+                日结
+                @}else if(detail.incomeMode == "MONTH"){
+                月结
+                @}else if(detail.incomeMode == "YEAR"){
+                年结
+                @}else if(detail.incomeMode == "EXPIRE"){
+                到期一次性还本付息
+                @}
+            </div>
+            <div class="form-row">
+                <label>预计到账时间: ${detail.planDate,"yyyy-MM-dd HH:mm:ss"}</label>
+            </div>
+            <div class="form-row">
+                <label>退出费用说明：${detail.exitFeeDesc!}</label>
+            </div>
+            <div class="form-row">
+                <label>购买费用说明: ${detail.buyFeeDesc!}</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <label>产品介绍：${detail.productDesc!}</label>
+    </div>
+    <div class="form-row">
+        <label>协议文件名称： ${detail.protocolName!}</label>
+        <a href="/admin/product/downloadProductProtocolFile?id=${detail.id}">点击下载协议文件</a>
+    </div>
+</form>
+
+<style>
+    form {
+        overflow: hidden;
+    }
+
+    .leftBox {
+        float: left;
+        width: 50%;
+    }
+
+    .rightBox {
+        float: left;
+        width: 50%;
+    }
+</style>
+<script>
+    function DateTimeFormatter(value) {
+        if (value == undefined) {
+            return "";
+        }
+        /*json格式时间转js时间格式*/
+        value = value.substr(1, value.length - 2);
+        var obj = eval('(' + "{Date: new " + value + "}" + ')');
+        var dateValue = obj["Date"];
+        if (dateValue.getFullYear() < 1900) {
+            return "";
+        }
+
+        return dateValue.format("yyyy-MM-dd hh:mm:ss");
+    }
+
+</script>

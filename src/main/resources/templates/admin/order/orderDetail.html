@@ -1,0 +1,113 @@
+<style>
+    .leftBox {
+        float: left;
+        width: 50%;
+    }
+
+    .rightBox {
+        float: left;
+        width: 50%;
+    }
+
+    form {
+        overflow: hidden;
+    }
+</style>
+<form id="detail_form" class="form-container">
+    <div class="leftBox">
+        <div class="form-row">
+            <label>订单号:</label> ${detail.orderNo!}
+        </div>
+        <div class="form-row">
+            <label id="orderTime">订单时间:</label> ${detail.orderTime!,"yyyy-MM-dd HH:mm:ss"}
+        </div>
+        <div class="form-row">
+            <label>支付时间:</label> ${detail.payTime!,"yyyy-MM-dd HH:mm:ss"}
+        </div>
+        <div class="form-row">
+            <label>投资人: ${detail.memberName!}</label>
+        </div>
+        <div class="form-row">
+            <label>投资账号: ${detail.memberAccount!}</label>
+        </div>
+        <div class="form-row">
+            <label>投资人电话: ${detail.memberPhone!}</label>
+        </div>
+        <div class="form-row">
+            <label>预计投资时间段: ${detail.planInvestStartDate!,"yyyy-MM-dd HH:mm:ss"} -
+                ${detail.planInvestEndDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+        <div class="form-row">
+            <label>实际投资时间段: ${detail.realInvestStartDate!,"yyyy-MM-dd HH:mm:ss"} -
+                ${detail.realInvestEndDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+        <div class="form-row">
+            <label>预计计息时间段: ${detail.planCountStartDate!,"yyyy-MM-dd HH:mm:ss"} - ${detail.planCountEndDate!,"yyyy-MM-dd HH:mm:ss"} </label>
+        </div>
+        <div class="form-row">
+            <label>实际计息时间段: ${detail.realCountStartDate!,"yyyy-MM-dd HH:mm:ss"} - ${detail.realCountEndDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+        <div class="form-row">
+            <label>实际到账时间: ${detail.realToAccountDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+        <div class="form-row">
+            <label>购买费用(元): ${detail.buyFee!} </label>
+        </div>
+        <div class="form-row">
+            <label>退出费用(元): ${detail.exitFee!}</label>
+        </div>
+    </div>
+    <div class="rightBox">
+        <div class="form-row">
+            <label>产品ID:</label> ${detail.productNo!}
+        </div>
+        <div class="form-row">
+            <label> 产品名称:</label> ${detail.productName!}
+        </div>
+        <div class="form-row">
+            <label>投资金额(元):</label> ${detail.investAmount!}
+        </div>
+        <div class="form-row">
+            @if(detail.unit == "DAY"){
+            <label>产品期限: ${detail.limit!}天</label>
+            @}else if(detail.unit == "MONTH"){
+            <label>产品期限: ${detail.limit!}月</label>
+            @}else{
+            <label>产品期限: ${detail.limit!}年</label>
+            @}
+        </div>
+        <div class="form-row">
+            <label>预期年化收益率%:</label> ${detail.apr!}
+        </div>
+        <div class="form-row">
+            <label>利息支付方式:</label>
+            @if(detail.incomeMode == "DAY"){
+            日结
+            @}else if(detail.incomeMode == "MONTH"){
+            月结
+            @}else if(detail.incomeMode == "YEAR"){
+            年结
+            @}else if(detail.incomeMode == "EXPIRE"){
+            到期一次性还本付息
+            @}
+        </div>
+        <div class="form-row">
+            <label>预计收益(元): ${detail.planIncome!} </label>
+        </div>
+        <div class="form-row">
+            <label>预计到账时间: ${detail.planToAccountDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+        <div class="form-row">
+            <label>预计到账金额(元): ${detail.planAmount!} </label>
+        </div>
+        <div class="form-row">
+            <label>实际收益(元): ${detail.realIncome!} </label>
+        </div>
+        <div class="form-row">
+            <label>实际到账金额(元): ${detail.realAmount!} </label>
+        </div>
+        <div class="form-row">
+            <label>退出时间: ${detail.exitDate!,"yyyy-MM-dd HH:mm:ss"}</label>
+        </div>
+    </div>
+</form>

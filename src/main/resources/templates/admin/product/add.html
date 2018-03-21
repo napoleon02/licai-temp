@@ -1,0 +1,478 @@
+<form id="createProduct_form" class="form-container" enctype="multipart/form-data">
+    <div class="form-row" style="overflow:hidden;">
+        <div class="mianbox" style="overflow:hidden;">
+            <div class="'leftBox" style="float:left;width:50%;">
+                <p>
+                    <span class="title">产品名称:</span>
+                    <input class="easyui-textbox" name="name"
+                           required="true"
+                           data-options="prompt:'',validType:'length[0,50]'" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">产品期限单位：</span>
+                    <select class="easyui-combobox unit" name="unit" editable="false" style="width:50px;">
+                        <option value="DAY">日</option>
+                        <option value="MONTH">月</option>
+                        <option value="YEAR">年</option>
+                    </select>
+                    <input class="easyui-numberbox limit" label="产品期限" name="limit"
+                           required="true"
+                           data-options="prompt:''" style="width:200px;margin-bottom:10px;">
+                </p>
+                <p>
+                    <span class="title">产品总金额(元):</span>
+                    <input class="easyui-numberbox amount" name="amount" id="product_allAmount"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">预期年化收益率%:</span>
+                    <input class="easyui-numberbox" name="apr"
+                           required="true"
+                           data-options="precision:2" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">最小投资单位(元):</span>
+                    <input class="easyui-numberbox minUnit" name="minUnit"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">最小投资金额(元):</span>
+                    <input class="easyui-numberbox minAmount" name="minAmount"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">最大购买金额(元):</span>
+                    <input class="easyui-numberbox maxAmount" name="maxAmount"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">投标开始时间:</span>
+                    <input class="easyui-datetimebox bidBeginDate" name="bidBeginDate"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;" editable="false" id="check1">
+                </p>
+                <p>
+                    <span class="title">投标结束时间:</span>
+                    <input class="easyui-datetimebox bidEndDate" name="bidEndDate"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;" editable="false" id="check2">
+                </p>
+                <p>
+                    <span class="title">起息日类型:</span>
+                    <select class="easyui-combobox" id="startDay" name="startType" editable="false" style="width:100px;">
+                        <option value="DIRECT">指定</option>
+                        <!--<option value="T+1">T+1</option>
+                        <option value="T+2">T+2</option>
+                        <option value="T+3">T+3</option>-->
+                    </select>
+                </p>
+                <p class="startDayBox">
+                    <span class="title">起息日开始时间:</span>
+                    <input class="easyui-datetimebox startDay" name="startDay"
+                           required="false"
+                           data-options="prompt:''" style="width:300px;" editable="false" id="check3">
+                </p>
+                <p>
+                    <span class="title">计息结束时间:</span>
+                    <input class="easyui-datetimebox countOverDate" name="countOverDate"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;" editable="false" id="check4">
+                </p>
+                <p>
+                    <span class="title">预计到账时间：</span>
+                    <select class="easyui-combobox type" name="type" editable="false" style="width:95px;">
+                        <option value="">请选择</option>
+                        <option value="T+1">T+1</option>
+                        <option value="T+2">T+2</option>
+                        <option value="T+3">T+3</option>
+                    </select>
+                    <input class="easyui-datetimebox planDate" name="planDate"
+                           required="true"
+                           data-options="prompt:''" style="width:200px;" editable="false" id="check5">
+                </p>
+                <p>
+                    <span class="title">是否提前结束：</span>
+                    <select class="easyui-combobox" name="isEarlyEnd" editable="false" style="width:50px;">
+                        <option value="N">否</option>
+                        <option value="Y">是</option>
+                    </select>
+                </p>
+                <p>
+                    <span class="title">收益说明:</span>
+                    <input class="easyui-textbox" name="incomeDesc"
+                           required="true"
+                           data-options="prompt:''" style="width:300px;">
+                </p>
+                <p>
+                    <span class="title">收益支付方式:</span>
+                    <select class="easyui-combobox" name="incomeMode" editable="false" style="width:200px;">
+                        <option value="EXPIRE">到期后本息一次性支付</option>
+                        <option value="DAY">日结</option>
+                        <option value="MONTH">月结</option>
+                        <option value="YEAR">年结</option>
+                    </select>
+                </p>
+            </div>
+        </div>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">退出费用说明:</span>
+            <textarea class="easyui-textbox" name="exitFeeDesc"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:''" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">购买费用说明:</span>
+            <textarea class="easyui-textbox" name="buyFeeDesc"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:''" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">资金用途:</span>
+            <textarea class="easyui-textbox" name="capitalDesc"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:'',validType:'length[0,200]'" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">资产渠道方:</span>
+            <textarea class="easyui-textbox" name="assetsChannel"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:'',validType:'length[0,200]'" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">资产详情:</span>
+            <textarea class="easyui-textbox" name="assetsInfo"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:'',validType:'length[0,200]'" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">还款来源:</span>
+            <textarea class="easyui-textbox" name="repaySource"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:'',validType:'length[0,200]'" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span class="title" style="display:block;margin-bottom:8px;">风险措施:</span>
+            <textarea class="easyui-textbox" name="riskMeasures"
+                      required="true"
+                      multiline="true"
+                      data-options="prompt:'',validType:'length[0,200]'" style="width:500px;height:80px;"></textarea>
+        </p>
+        <p>
+            <span style="display:block;margin-bottom:8px;">产品介绍：</span>
+            <textarea class="easyui-textbox" name="productDesc"
+                      required="true"
+                      multiline="true"
+                      data-options="multiline:true,validType:'length[0,2048]'" style="width:500px;height:200px"></textarea>
+        </p>
+        <p>
+            <span class="title">协议名称:</span>
+            <input class="easyui-textbox" name="protocolName"
+                   required="true"
+                   data-options="prompt:'',validType:'length[0,30]'" style="width:500px;">
+        </p>
+        <div style="margin-bottom:20px">
+            <span class="title">协议文件:</span>
+            <input class="easyui-filebox" accept=".pdf"
+                   name="file"
+                   required="true"
+                   data-options="prompt:'',buttonText:'选择文件'" style="width:500px;">
+        </div>
+    </div>
+    <div class="form-footer">
+        <button type="button" class="easyui-linkbutton btn" data-options="iconCls:'icon-save',width:'80px'" id="createProduct_confirm">确认</button>
+        <button type="button" class="easyui-linkbutton btn" data-options="iconCls:'icon-cancel',width:'80px'" id="createProduct_cancel">取消</button>
+    </div>
+</form>
+<style>
+    #createProduct_form p {
+        margin: 5px 0 10px 0;
+    }
+
+    #createProduct_form .title {
+        width: 100px;
+        display: inline-block;
+    }
+
+    #createProduct_form .textbox-icon {
+        float: right;
+    }
+
+    #createProduct_form .combo-panel {
+        height: auto;
+    }
+
+</style>
+<script>
+    $(function () {
+
+        // 这是只允许选择当前时间之后的时间
+        $("#check1").datetimebox('calendar').calendar({
+            validator: function(date){
+                return validator(date);
+            }
+        });
+
+        $("#check2").datetimebox('calendar').calendar({
+            validator: function(date){
+                return validator(date);
+            }
+        });
+
+        $("#check3").datetimebox('calendar').calendar({
+            validator: function(date){
+                return validator(date);
+            }
+        });
+
+        $("#check4").datetimebox('calendar').calendar({
+            validator: function(date){
+                return validator(date);
+            }
+        });
+
+        $("#check5").datetimebox('calendar').calendar({
+            validator: function(date){
+                return validator(date);
+            }
+        });
+
+        //闲置产品金额输入框只能输入10位整数数字
+        $('#product_allAmount').numberbox('textbox').attr('maxlength', 8);
+
+        var bad = true;
+        $("#createProduct_form").form("disableValidation");
+
+        $("#createProduct_cancel").on("click", function () {
+            var tab = $('#main-tabs').tabs('getSelected');
+            if (tab) {
+                var index = $('#main-tabs').tabs('getTabIndex', tab);
+                if (index > 0) {
+                    $('#main-tabs').tabs("close", index);
+                }
+            }
+        });
+
+        $("#createProduct_confirm").on("click", function () {
+            $.messager.confirm('提示', '确定要保存新增的产品?', function (res) {
+                submit("/admin/product/add");
+            });
+        });
+
+        // 起息日选择
+        $("#createProduct_form").find('#startDay').combobox({
+            onSelect: function (record) {
+                if (record.value == "DIRECT") {
+                    $('.startDayBox').css({"display": "block"});
+                    $(".startDay").datetimebox("setValue", "");
+                } else {
+                    $('.startDayBox').css({"display": "none"});
+                    $(".startDay").datetimebox("setValue", "2008-08-08 00:00:00");
+                }
+            }
+
+        });
+        // 计息结束时间
+        /*$(".bidEndDate").datetimebox({
+            onChange: function (value) {
+                // console.log($(".bidEndDate").datebox('getValue'))
+                // console.log(11+$(".countOverDate").datebox('getValue'))
+                if ($(".unit").combobox("getValue") == "DAY") {
+                    var endDay = new Date($(".bidEndDate").datebox('getValue')).getTime();
+                    var addDay = $(".limit").numberbox("getValue") * 1 * 24 * 60 * 60 * 1000;
+                    var overDay = new Date((endDay + addDay));
+                    $(".countOverDate").datetimebox("setValue", formatter(overDay));
+                    // $(".countOverDate").val(formatter(overDay));
+                } else if ($(".unit").combobox("getValue") == "MONTH") {
+                    var endDay = new Date($(".bidEndDate").datebox('getValue')).getTime();
+                    var addDay = $(".limit").numberbox("getValue") * 1 * 24 * 60 * 60 * 1000 * 30;
+                    var overDay = new Date((endDay + addDay));
+                    $(".countOverDate").datetimebox("setValue", formatter(overDay));
+                } else if ($(".unit").combobox("getValue") == "YEAR") {
+                    var endDay = new Date($(".bidEndDate").datebox('getValue')).getTime();
+                    var addDay = $(".limit").numberbox("getValue") * 1 * 24 * 60 * 60 * 1000 * 365;
+                    var overDay = new Date((endDay + addDay));
+                    $(".countOverDate").datetimebox("setValue", formatter(overDay));
+                }
+            }
+        });*/
+
+        $(".bidBeginDate").datetimebox({
+          onChange: function (value) {
+              if( $(".bidEndDate").datetimebox("getValue") !== '') {
+                  var startDay = new Date($(".bidBeginDate").datetimebox("getValue")).getTime();
+                  var endDay = new Date($(".bidEndDate").datetimebox("getValue")).getTime();
+                  if(startDay>endDay){
+                      // $(".bidBeginDate").datetimebox("setValue", "")
+                      $.messager.alert('提示','投标开始时间不能晚于投标结束时间')
+                  }
+              }
+          }
+      });
+        $(".bidEndDate").datetimebox({
+            onChange: function (value) {
+                if( $(".bidBeginDate").datetimebox("getValue") !== '') {
+                    var startDay = new Date($(".bidBeginDate").datetimebox("getValue")).getTime();
+                    var endDay = new Date($(".bidEndDate").datetimebox("getValue")).getTime();
+                    if(startDay>endDay){
+                        // $(".bidEndDate").datetimebox("setValue", "")
+                        $.messager.alert('提示','投标结束时间不能早于投标开始时间')
+                    }
+                }
+            }
+        });
+
+        $(".startDay").datetimebox({
+            onChange: function (value) {
+                var startDay = new Date($(".bidEndDate").datetimebox("getValue")).getTime();
+                var endDay = new Date($(".startDay").datetimebox("getValue")).getTime();
+                if(startDay>endDay){
+                    // $(".bidEndDate").datetimebox("setValue", "")
+                    $.messager.alert('提示','起息开始时间不能早于投标结束时间')
+                }
+            }
+        });
+
+        $(".countOverDate").datetimebox({
+            onChange: function (value) {
+                var startDay = new Date($(".startDay").datetimebox("getValue")).getTime();
+                var endDay = new Date($(".countOverDate").datetimebox("getValue")).getTime();
+                if(startDay>endDay){
+                    // $(".bidEndDate").datetimebox("setValue", "")
+                    $.messager.alert('提示','计息结束时间不能早于起息开始时间')
+                }
+            }
+        });
+        $(".textbox-invalid").css({"background": "#ffffff", "border-color": "#95B8E7"});
+        $(".validatebox-invalid").css({"background": "#ffffff"});
+        // 预计到账时间
+        $(".type").combobox({
+            onChange: function (value) {
+                console.log($(".type").combobox('getValue'));
+                if ($(".type").combobox("getValue") == "T+1") {
+                    console.log(1)
+                    var endDay = $(".countOverDate").datebox('getValue');
+                    console.log(endDay)
+                    var overDay = getworkday(endDay, 1);
+                    $(".planDate").datetimebox("setValue", overDay);
+                } else if ($(".type").combobox("getValue") == "T+2") {
+                    console.log(2)
+                    var endDay = $(".countOverDate").datebox('getValue');
+                    var overDay = getworkday(endDay, 2);
+                    $(".planDate").datetimebox("setValue", overDay);
+                } else if ($(".type").combobox("getValue") == "T+3") {
+                    console.log(3)
+                    var endDay = $(".countOverDate").datebox('getValue');
+                    var overDay = getworkday(endDay, 3);
+                    $(".planDate").datetimebox("setValue", overDay);
+                }
+            }
+        });
+
+        // 工作日计算
+        function getworkday(date, itervalByDay) {
+            var date1 = new Date(date);
+            console.log(date1)
+            var millisceonds = date1.getTime();
+            for (var i = 1; i <= itervalByDay; i++) {
+                millisceonds += 24 * 60 * 60 * 1000;
+                date1.setTime(millisceonds);
+                console.log("------" + i);
+                // if (date1.getDay() === 0 || date1.getDay() === 6) {
+                //     i--
+                //     console.log("--里面----" + i);
+                // }
+            }
+            var Y = date1.getFullYear() + '-';
+            var M = (date1.getMonth() + 1 < 10 ? '0' + (date1.getMonth() + 1) : date1.getMonth() + 1) + '-';
+            var D = (date1.getDate() < 10 ? '0' + (date1.getDate()) : date1.getDate()) + ' ';
+            var H = (date1.getHours() < 10 ? '0' + (date1.getHours()) : date1.getHours()) + ':';
+            var MIN = (date1.getMinutes() < 10 ? '0' + (date1.getMinutes()) : date1.getMinutes()) + ':';
+            var S = (date1.getSeconds() < 10 ? '0' + (date1.getSeconds()) : date1.getSeconds());
+            return Y + M + D + H + MIN + S
+        }
+
+        // 时间格式转换
+        function formatter(date) {
+            return date.getFullYear() + '-' + getzf((date.getMonth() + 1)) + '-' + getzf(date.getDate()) + ' ' + getzf(date.getHours()) + ':' + getzf(date.getMinutes()) + ':' + getzf(date.getSeconds())
+        }
+
+        // 时间补零操作
+        function getzf(num) {
+            if (parseInt(num) < 10) {
+                num = '0' + num;
+            }
+            return num;
+        }
+
+        //验证
+        $("input", $(".maxAmount").next("span")).blur(function () {
+            if ($(".maxAmount").val() * 1 < $(".minAmount").val() * 1) {
+                $.messager.alert('提示', '必须大于最小投资金额')
+                $(".maxAmount").textbox('setValue', '')//赋值
+            } else if ($(".maxAmount").val() * 1 % ($(".minUnit").val() * 1) != 0) {
+                $.messager.alert('提示', '最大购买金额必须是最小投资单位的整数倍')
+                $(".maxAmount").textbox('setValue', '')//赋值
+            } else if ($(".maxAmount").val() * 1 > $(".amount").val() * 1) {
+                $.messager.alert('提示', '最大购买金额必须小于产品总金额')
+                $(".maxAmount").textbox('setValue', '')//赋值
+            }
+        });
+        $("input", $(".minAmount").next("span")).blur(function () {
+            if ($(".minUnit").val() * 1 > $(".minAmount").val() * 1) {
+                $.messager.alert('提示', '必须大于最小投资单位')
+                $(".minAmount").textbox('setValue', '')//赋值
+            } else if ($(".minAmount").val() * 1 % ($(".minUnit").val() * 1) != 0) {
+                $.messager.alert('提示', '最小购买金额必须是最小投资单位的整数倍')
+                $(".minAmount").textbox('setValue', '')//赋值
+            } else if ($(".minAmount").val() * 1 > $(".amount").val() * 1) {
+                $.messager.alert('提示', '最小购买金额必须小于产品总金额')
+                $(".minAmount").textbox('setValue', '')//赋值
+            }
+        });
+        $("input", $(".minUnit").next("span")).blur(function () {
+            if ($(".minUnit").val() * 1 > $(".amount").val() * 1) {
+                $.messager.alert('提示', '最小投资单位必须小于产品总金额')
+                $(".minAmount").textbox('setValue', '')//赋值
+            }
+        });
+
+        function submit(url) {
+            var r = $("#createProduct_form").form('enableValidation').form('validate');
+            if (r && bad) {
+                bad = false;
+                $("#createProduct_form").ajaxSubmit({
+                    url: url,
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success) {
+                            showMsg(data.msg, 1, function () {
+                                var tab = $('#main-tabs').tabs('getSelected');
+                                tab.panel('refresh');
+                            });
+                        } else {
+                            showMsg(data.msg, 4);
+                            bad = true;
+                        }
+                    }
+                });
+            }
+        }
+
+    });
+    function validator(date){
+        var now = new Date();
+        var d1 = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1,now.getHours(),now.getMinutes(),now.getSeconds());
+        return date>=d1;
+    }
+</script>

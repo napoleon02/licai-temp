@@ -1,0 +1,85 @@
+@layout("/admin/layout/commonLayout.html"){
+<style>
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .row img {
+        width: 30%;
+        height: 34px;
+        vertical-align: middle;
+        margin-left: 10px;
+    }
+
+    body {
+        background: url(/admin/bg.jpg) no-repeat fixed center center;
+        background-size: cover;
+    }
+</style>
+<body>
+<div class="easyui-window" title="永达金融理财平台"
+     data-options="collapsible:false,minimizable:false,maximizable:false,closable:false,resizable:false,draggable:false"
+     style="width:400px;height:265px;padding:10px;">
+    <form id="login_form">
+        <div class="row">
+            <input class="easyui-textbox" prompt="帐号" id="account" name="account" iconCls="icon-man"
+                   required="true"
+                   iconWidth="28"
+                   style="width:100%;height:34px;">
+        </div>
+        <div class="row">
+            <input class="easyui-passwordbox" prompt="密码" id="password" name="password"
+                   required="true"
+                   iconWidth="28"
+                   style="width:100%;height:34px;">
+        </div>
+        <div class="row">
+            <input class="easyui-textbox" prompt="验证码" id="token" name="token"
+                   required="true"
+                   style="width:60%;height:34px;">
+            <img src="/captcha/genImgCode" onclick="this.src='/captcha/genImgCode?d='+new Date().getTime()">
+        </div>
+        <div class="row">
+            <a href="#" id="btn" class="easyui-linkbutton" style="width:100%">登录</a>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        var bad = true;
+
+        $("#login_form").form("disableValidation");
+
+        $("#btn").on("click", function () {
+            var r = $("#login_form").form('enableValidation').form('validate');
+            if (!r) {
+                return false;
+            }
+            if (bad) {
+                bad = false;
+                var params = $("#login_form").serializeArray();
+                var url = "/admin/login/doLogin";
+                $.post(url, params, function (data) {
+                    if (data.success) {
+                        location.href = "/admin/";
+                    } else {
+                        $.messager.show({
+                            title: '提示',
+                            msg: data.msg,
+                            showType: 'show'
+                        });
+                        bad = true;
+                    }
+                }, 'json');
+            }
+        });
+
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                jQuery("#btn").click();
+            }
+        });
+    });
+</script>
+</body>
+@}

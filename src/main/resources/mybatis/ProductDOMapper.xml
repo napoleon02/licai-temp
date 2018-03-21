@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yongda.licai.system.dal.mapper.ProductDOMapper">
+    <resultMap id="BaseResultMap" type="com.yongda.licai.system.dal.model.ProductDO">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_NO" property="productNo" jdbcType="VARCHAR"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR"/>
+        <result column="AMOUNT" property="amount" jdbcType="DECIMAL"/>
+        <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+        <result column="LIMIT" property="limit" jdbcType="DECIMAL"/>
+        <result column="APR" property="apr" jdbcType="DECIMAL"/>
+        <result column="MIN_UNIT" property="minUnit" jdbcType="DECIMAL"/>
+        <result column="MAX_AMOUNT" property="maxAmount" jdbcType="DECIMAL"/>
+        <result column="MIN_AMOUNT" property="minAmount" jdbcType="DECIMAL"/>
+        <result column="START_TYPE" property="startType" jdbcType="VARCHAR"/>
+        <result column="START_DAY" property="startDay" jdbcType="TIMESTAMP"/>
+        <result column="INCOME_MODE" property="incomeMode" jdbcType="VARCHAR"/>
+        <result column="BID_BEGIN_DATE" property="bidBeginDate" jdbcType="TIMESTAMP"/>
+        <result column="BID_END_DATE" property="bidEndDate" jdbcType="TIMESTAMP"/>
+        <result column="COUNT_OVER_DATE" property="countOverDate" jdbcType="TIMESTAMP"/>
+        <result column="PLAN_DATE" property="planDate" jdbcType="TIMESTAMP"/>
+        <result column="IS_EARLY_END" property="isEarlyEnd" jdbcType="CHAR"/>
+        <result column="BUY_FEE_DESC" property="buyFeeDesc" jdbcType="VARCHAR"/>
+        <result column="EXIT_FEE_DESC" property="exitFeeDesc" jdbcType="VARCHAR"/>
+        <result column="INCOME_DESC" property="incomeDesc" jdbcType="VARCHAR"/>
+        <result column="CAPITAL_DESC" property="capitalDesc" jdbcType="VARCHAR"/>
+        <result column="PRODUCT_DESC" property="productDesc" jdbcType="VARCHAR"/>
+        <result column="ASSETS_CHANNEL" property="assetsChannel" jdbcType="VARCHAR"/>
+        <result column="ASSETS_INFO" property="assetsInfo" jdbcType="VARCHAR"/>
+        <result column="REPAY_SOURCE" property="repaySource" jdbcType="VARCHAR"/>
+        <result column="RISK_MEASURES" property="riskMeasures" jdbcType="VARCHAR"/>
+        <result column="PROTOCOL_NAME" property="protocolName" jdbcType="VARCHAR"/>
+        <result column="PROTOCOL_FILE" property="protocolFile" jdbcType="VARCHAR"/>
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="CREATE_PERSON_ID" property="createPersonId" jdbcType="VARCHAR"/>
+        <result column="CREATE_PERSON_NAME" property="createPersonName" jdbcType="VARCHAR"/>
+        <result column="ONLINE_STATUS" property="onlineStatus" jdbcType="VARCHAR"/>
+        <result column="SELL_NUMBER" property="sellNumber" jdbcType="DECIMAL"/>
+        <result column="UPDATE_PERSON_ID" property="updatePersonId" jdbcType="VARCHAR"/>
+        <result column="UPDATE_PERSON_NAME" property="updatePersonName" jdbcType="VARCHAR"/>
+        <result column="REPAYMENT_TIME" property="repaymentTime" jdbcType="TIMESTAMP"/>
+        <result column="REPAYMENT_MEMO" property="repaymentMemo" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        ID, PRODUCT_NO, NAME, AMOUNT, UNIT, LIMIT, APR, MIN_UNIT, MAX_AMOUNT, MIN_AMOUNT,
+        START_TYPE, START_DAY, INCOME_MODE, BID_BEGIN_DATE, BID_END_DATE, COUNT_OVER_DATE,
+        PLAN_DATE, IS_EARLY_END, BUY_FEE_DESC, EXIT_FEE_DESC, INCOME_DESC, CAPITAL_DESC,
+        PRODUCT_DESC, ASSETS_CHANNEL, ASSETS_INFO, REPAY_SOURCE, RISK_MEASURES, PROTOCOL_NAME,
+        PROTOCOL_FILE, CREATE_TIME, UPDATE_TIME, STATUS, CREATE_PERSON_ID, CREATE_PERSON_NAME,
+        ONLINE_STATUS, SELL_NUMBER, UPDATE_PERSON_ID, UPDATE_PERSON_NAME, REPAYMENT_TIME,
+        REPAYMENT_MEMO
+    </sql>
+
+    <select id="queryAllProduct" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM FP.TMP_PRODUCT
+        <where>
+            <if test="productNo != null and productNo != ''">
+                AND PRODUCT_NO = #{productNo}
+            </if>
+            <if test="name != null and name !=''">
+                AND NAME like concat(concat('%',#{name}),'%')
+            </if>
+            <if test="amount != null and amount !=''">
+                AND AMOUNT = #{amount}
+            </if>
+            <if test="apr != null and apr !=''">
+                AND APR = #{apr}
+            </if>
+            <if test="createTimeUp != null and createTimeUp != ''">
+                <![CDATA[ AND to_char(BID_BEGIN_DATE,'yyyy-mm-dd hh24:mi:ss') >= #{createTimeUp}  ]]>
+            </if>
+            <if test="createTimeDown != null and createTimeDown != ''">
+                <![CDATA[ AND to_char(BID_END_DATE,'yyyy-mm-dd hh24:mi:ss') <= #{createTimeDown}  ]]>
+            </if>
+            <if test="NewUpTime != null and NewUpTime != ''">
+                <![CDATA[ AND to_char(UPDATE_TIME,'yyyy-mm-dd hh24:mi:ss') >= #{NewUpTime}  ]]>
+            </if>
+            <if test="OutUpTime != null and OutUpTime != ''">
+                <![CDATA[ AND to_char(UPDATE_TIME,'yyyy-mm-dd hh24:mi:ss') <= #{OutUpTime}  ]]>
+            </if>
+            <if test="onlineStatus != null and onlineStatus != ''">
+                AND ONLINE_STATUS = #{onlineStatus}
+            </if>
+            <if test="status != null and status != ''">
+                AND STATUS = #{status}
+            </if>
+        </where>
+        ORDER BY UPDATE_TIME DESC
+    </select>
+
+    <select id="queryAllProductByOnlineStatus" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM FP.TMP_PRODUCT
+        WHERE
+        online_status = #{status}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 带行锁查询 -->
+    <select id="findByIdWithForUpdate" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT *
+		FROM TMP_PRODUCT t
+		WHERE t.id = #{id}
+		FOR UPDATE
+	</select>
+
+    <!-- 修改销售金融 -->
+    <update id="updateSellNumber">
+		UPDATE TMP_PRODUCT t
+		SET t.SELL_NUMBER = (t.SELL_NUMBER + #{amount})
+		WHERE t.ID = #{id}
+		<![CDATA[ AND t.AMOUNT >= (t.SELL_NUMBER + #{amount}) ]]>
+		<![CDATA[ AND (t.SELL_NUMBER + #{amount}) >= 0
+
+        ]]>
+    </update>
+
+</mapper>
